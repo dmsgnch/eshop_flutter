@@ -118,7 +118,7 @@ class _GetProductDataState extends State<GetProductDataView> {
                 controller: _priceController,
                 onChanged: (value) {
                   PriceValidate(value);
-                  WholesalePriceValidate(value);
+                  WholesalePriceValidate(_wholesalePriceController.text);
                   UpdateButtonState();
                 },
                 validator: (value) {
@@ -134,7 +134,7 @@ class _GetProductDataState extends State<GetProductDataView> {
                 controller: _wholesalePriceController,
                 onChanged: (value) {
                   WholesalePriceValidate(value);
-                  PriceValidate(value);
+                  PriceValidate(_priceController.text);
                   UpdateButtonState();
                 },
                 validator: (value) {
@@ -221,6 +221,14 @@ class _GetProductDataState extends State<GetProductDataView> {
           _isWholesalePriceValid &&
           _isInStockValid &&
           _isWholesaleQuantityValid;
+      
+      print("Name = ${_isNameValid == true ? "true" : "false"}");
+      print("Description = ${_isDescriptionValid == true ? "true" : "false"}");
+      print("Weight = ${_isWeightValid == true ? "true" : "false"}");
+      print("Price = ${_isPriceValid == true ? "true" : "false"}");
+      print("Wholesale price = ${_isWholesalePriceValid == true ? "true" : "false"}");
+      print("Wholesale quantity = ${_isWholesaleQuantityValid == true ? "true" : "false"}");
+      print("Amount = ${_isInStockValid == true ? "true" : "false"}");
     });
   }
   

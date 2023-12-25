@@ -24,22 +24,12 @@ class CartController {
   }
 
   void DeleteProductFromList(BuildContext context, String productId) {
-    _helperView.AddNewMessage(MessageType.Info, "Purchase successfully completed");
-    _helperView.DisplayAllMessageInList(context);
-
     GetIt.instance.get<Cart>().CartItems.removeWhere((ci) => ci.product.id == productId);
     
-    updateListFunction();
-  }
-
-  void AddToCart(BuildContext context, Product product, int quantity) {
-    Cart cart = GetIt.instance.get<Cart>();
-    cart.CartItems.add(CartItem(
-        product, quantity));
-    Navigator.of(context).pop();
-
-    _helperView.AddNewMessage(MessageType.Info, "$quantity ${product.name} added to cart");
+    _helperView.AddNewMessage(MessageType.Info, "Cart item successfully deleted");
     _helperView.DisplayAllMessageInList(context);
+    
+    updateListFunction();
   }
 
   void UpdateProductInList(BuildContext context, Product product, int quantity) {

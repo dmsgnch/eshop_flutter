@@ -14,7 +14,8 @@ class AuthenticationView extends StatefulWidget {
 }
 
 class _AuthenticationViewState extends State<AuthenticationView> {
-  final AuthenticationController _authenticationController = AuthenticationController();
+  final AuthenticationController _authenticationController =
+      AuthenticationController();
   bool _isEmailValid = false, _isPasswordValid = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -27,11 +28,11 @@ class _AuthenticationViewState extends State<AuthenticationView> {
     _passwordController.dispose();
     super.dispose();
   }
-  
+
   void OnLoginButtonPressed() {
     final String email = _emailController.text;
     final String password = _passwordController.text;
-    
+
     _authenticationController.Authenticate(context, email, password);
   }
 
@@ -41,94 +42,114 @@ class _AuthenticationViewState extends State<AuthenticationView> {
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(33, 39, 42, 1),
         centerTitle: true,
-        title: const Text("TradeWave", style: TextStyle(color: Colors.white70, fontSize: 30)),
+        title: const Text("TradeWave",
+            style: TextStyle(color: Colors.white70, fontSize: 30)),
       ),
       backgroundColor: const Color.fromRGBO(21, 27, 31, 1),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(bottom: 25),
-              alignment: Alignment.center,
-              child: const Text('Authentication', style: TextStyle(color: Colors.grey, fontSize: 30)),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(bottom: 25),
+                  alignment: Alignment.center,
+                  child: const Text('Authentication',
+                      style: TextStyle(color: Colors.grey, fontSize: 30)),
+                ),
+                TextFormField(
+                  controller: _emailController,
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                  onChanged: (value) {
+                    EmailValidate(value);
+                    UpdateButtonState();
+                  },
+                  validator: (value) {
+                    return EmailValidate(value);
+                  },
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Color.fromRGBO(33, 39, 42, 1),
+                    hintStyle: TextStyle(color: Colors.grey),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                  onChanged: (value) {
+                    PasswordValidate(value);
+                    UpdateButtonState();
+                  },
+                  validator: (value) {
+                    return PasswordValidate(value);
+                  },
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: const InputDecoration(
+                    labelText: "Password",
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Color.fromRGBO(33, 39, 42, 1),
+                    hintStyle: TextStyle(color: Colors.grey),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: isButtonEnabled ? OnLoginButtonPressed : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromRGBO(33, 39, 42, 1),
+                  ),
+                  child: const Text(
+                    'Login',
+                    style: TextStyle(color: Colors.grey, fontSize: 20),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    //Navigator.pushReplacementNamed(context, '/registration');
+                    Navigator.push(
+                      context,
+                      MyPageRoute(page: const RegistrationView()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    shadowColor: Colors.transparent,
+                  ),
+                  child: const Text(
+                    'I don\'t have an account yet. Register',
+                    style: TextStyle(color: Colors.white38, fontSize: 16),
+                  ),
+                ),
+                if (const bool.fromEnvironment('dart.vm.product') != true)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            _authenticationController.Authenticate(
+                                context, "manager@wave.ua", "12345");
+                          },
+                          child: const Text("Manager")),
+                      TextButton(
+                          onPressed: () {
+                            _authenticationController.Authenticate(
+                                context, "customer@wave.ua", "12345");
+                          },
+                          child: const Text("Customer"))
+                    ],
+                  ),
+              ],
             ),
-            TextFormField(
-              controller: _emailController,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
-              onChanged: (value) {
-                
-                //TODO: Remove mock
-                //_authenticationController.Authenticate(context, "manager@wave.ua", "12345");
-                //_authenticationController.Authenticate(context, "customer@wave.ua", "12345");
-                 EmailValidate(value);
-                 UpdateButtonState();
-              },
-              validator: (value) {
-                return EmailValidate(value);
-              },
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Color.fromRGBO(33, 39, 42, 1),
-                hintStyle: TextStyle(color: Colors.grey),
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: _passwordController,
-              obscureText: true,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
-              onChanged: (value) {
-                PasswordValidate(value);
-                UpdateButtonState();
-              },
-              validator: (value) {
-                return PasswordValidate(value);
-              },
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: const InputDecoration(
-                labelText: "Password",
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Color.fromRGBO(33, 39, 42, 1),
-                hintStyle: TextStyle(color: Colors.grey),
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: isButtonEnabled ? OnLoginButtonPressed : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(33, 39, 42, 1),
-              ),
-              child: const Text(
-                'Login',
-                style: TextStyle(color: Colors.grey, fontSize: 20),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                //Navigator.pushReplacementNamed(context, '/registration');
-                Navigator.push(
-                  context,
-                  MyPageRoute(page: const RegistrationView()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                shadowColor: Colors.transparent,
-              ),
-              child: const Text(
-                'I don\'t have an account yet. Register',
-                style: TextStyle(color: Colors.white38, fontSize: 16),
-              ),
-            )
-          ],
+          ),
         ),
       ),
     );

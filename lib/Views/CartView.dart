@@ -1,8 +1,13 @@
 import 'package:eshop/Controllers/CartController.dart';
 import 'package:eshop/Models/Domain/Cart.dart';
 import 'package:eshop/Models/Domain/CartItem.dart';
+import 'package:eshop/Models/Domain/User.dart';
+import 'package:eshop/Models/Enums/AccountType.dart';
+import 'package:eshop/Models/Enums/MessageType.dart';
+import 'package:eshop/Models/ViewModels/MessageView.dart';
 import 'package:eshop/Models/ViewModels/ProductView.dart';
 import 'package:eshop/Views/AddToCartView.dart';
+import 'package:eshop/Views/DialogConfirmView.dart';
 import 'package:eshop/Views/ProductInfoView.dart';
 import 'package:eshop/main.dart';
 import 'package:flutter/material.dart';
@@ -74,13 +79,17 @@ class CartViewState extends State<CartView> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromRGBO(33, 39, 42, 1)),
-                onPressed: () {
+                onPressed: GetIt.instance.get<User>().accountType ==
+                    AccountType.Manager ? null : cart.CartItems.isNotEmpty ? () {
                   cartController.BuyProducts(context);
                   setState(() {
                     cart = Cart();
                   });
-                },
+                } : null,
                 child:
+                  GetIt.instance.get<User>().accountType ==
+                  AccountType.Manager ? 
+                    const Text('Buy is not allowed', style: TextStyle(color: Colors.white70, fontSize: 16)) :
                     const Text('Buy', style: TextStyle(color: Colors.white70, fontSize: 20)),
               ),
             ],
@@ -182,8 +191,13 @@ class CartViewState extends State<CartView> {
                   child: IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () {
-                      cartController.DeleteProductFromList(
-                          context, cartItem.product.id);
+                      DialogConfirmView dialogConfirmView = DialogConfirmView();
+                      dialogConfirmView.ShowProductDialog(
+                          context,
+                          Message(MessageType.Warning,
+                              "Are you sure you want to delete this product in cart?"),
+                          cartItem.product.id,
+                          cartController.DeleteProductFromList);
                     },
                   ),
                 ),

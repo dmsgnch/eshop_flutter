@@ -45,13 +45,22 @@ class ProductListController {
   }
   
   void AddToCart(BuildContext context, Product product, int quantity) {
-      Cart cart = GetIt.instance.get<Cart>();
+    Cart cart = GetIt.instance.get<Cart>();
+    if(cart.CartItems.any((ci) => ci.product.id == product.id)) {
+      var foundCartItem = cart.CartItems.firstWhere(
+              (ci) => ci.product.id == product.id
+      );
+
+      foundCartItem.quantity += quantity;
+    }
+    else {
       cart.CartItems.add(CartItem(
           product, quantity));
-      Navigator.of(context).pop();
-      
-      _helperView.AddNewMessage(MessageType.Info, "$quantity ${product.name} added to cart");
-      _helperView.DisplayAllMessageInList(context);
+    }
+    Navigator.of(context).pop();
+
+    _helperView.AddNewMessage(MessageType.Info, "$quantity ${product.name} added to cart");
+    _helperView.DisplayAllMessageInList(context);
   }
 
   Future<List<ProductView>> GetAllProductsAsync() async {

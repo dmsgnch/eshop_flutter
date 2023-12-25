@@ -13,3 +13,16 @@ enum AccountType {
   Manager,
 }
 
+class GetAccountTypeName {
+  static String getAccountTypeName(AccountType accountType) {
+    switch (accountType) {
+      case AccountType.Customer:
+        return 'Customer';
+      case AccountType.Manager:
+        return 'Manager';
+      default:
+        throw Exception("Account type not implemented");
+    }
+  }
+}
+

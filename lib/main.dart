@@ -4,6 +4,7 @@ import 'package:eshop/Controllers/AuthenticationController.dart';
 import 'package:eshop/SetupLocator.dart';
 import 'package:eshop/Views/CartView.dart';
 import 'package:eshop/Views/ProductListView.dart';
+import 'package:eshop/Views/ProfileView.dart';
 import 'package:eshop/Views/RegistrationView.dart';
 import 'package:flutter/material.dart';
 
@@ -85,7 +86,7 @@ class MyHomePageState extends State<MyHomePage> {
         newWidget = CartView(myHomePageState: this);
         break;
       case "Profile":
-        newWidget = const RegistrationView();
+        newWidget = ProfileView(myHomePageState: this);
         break;
       default:
         throw Exception("There are no any menu with the same name: $buttonText");

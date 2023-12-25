@@ -3,7 +3,11 @@ import 'dart:ui';
 import 'package:eshop/Controllers/ProductListController.dart';
 import 'package:eshop/Models/Domain/User.dart';
 import 'package:eshop/Models/Enums/AccountType.dart';
+import 'package:eshop/Models/Enums/MessageType.dart';
+import 'package:eshop/Models/ViewModels/MessageView.dart';
 import 'package:eshop/Models/ViewModels/ProductView.dart';
+import 'package:eshop/Views/DialogConfirmView.dart';
+import 'package:eshop/Views/GetProductDataView.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -42,6 +46,7 @@ class _ProductInfoViewState extends State<ProductInfoView> {
           padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
                 flex: 6,
@@ -54,18 +59,56 @@ class _ProductInfoViewState extends State<ProductInfoView> {
                   },
                 ),
               ),
-              Flexible(flex: 1, child: Text(widget.productView.name)),
-              Flexible(flex: 1, child: Text(widget.productView.description)),
+              Flexible(
+                flex: 1,
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Name: ${widget.productView.name}"),
+                ),
+              ),
+              Flexible(
+                flex: 1,
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Description: ${widget.productView.description}"),
+                ),
+              ),
+              Flexible(
+                flex: 1,
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Weight: ${widget.productView.weightInGrams}"),
+                ),
+              ),
+              Flexible(
+                flex: 1,
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Wholesale quantity: ${widget.productView.wholesaleQuantity}"),
+                ),
+              ),
+              if(GetIt.instance.get<User>().accountType ==
+                  AccountType.Manager)
+              Flexible(
+                flex: 1,
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text("In stock: ${widget.productView.inStock}"),
+                ),
+              ),
               Flexible(
                   flex: 2,
                   child: Column(
                     children: [
                       Container(
-                        child: Text(widget.productView.pricePerUnit.toString()),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                            "Price: ${widget.productView.pricePerUnit.toString()}"),
                       ),
                       Container(
-                        child: Text(widget.productView.wholesalePricePerUnit
-                            .toString()),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                            "Wholesale price: ${widget.productView.wholesalePricePerUnit.toString()}"),
                       ),
                     ],
                   )),
@@ -74,12 +117,10 @@ class _ProductInfoViewState extends State<ProductInfoView> {
         ),
         actions: [
           Container(
-            alignment: Alignment.bottomRight,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                if (GetIt.instance
-                    .get<User>()
-                    .accountType ==
+                if (GetIt.instance.get<User>().accountType ==
                     AccountType.Manager)
                   DisplayManagerButtons()
                 else
@@ -104,16 +145,31 @@ class _ProductInfoViewState extends State<ProductInfoView> {
         if (widget.editFunc != null)
           TextButton(
             onPressed: () {
-              widget.editFunc!(widget.myContext, widget.productView);
               Navigator.of(context).pop();
+              showDialog(
+                context: context,
+                builder: (BuildContext dialogContext) {
+                  return GetProductDataView(
+                      myContext: widget.myContext,
+                      title: "Edit product",
+                      productView: widget.productView,
+                      function: widget.editFunc!);
+                },
+              );
             },
             child: const Text('Edit'),
           ),
         if (widget.delFunc != null)
           TextButton(
             onPressed: () {
-              widget.delFunc!(widget.myContext, widget.productView.productId);
               Navigator.of(context).pop();
+              DialogConfirmView dialogConfirmView = DialogConfirmView();
+              dialogConfirmView.ShowProductDialog(
+                  widget.myContext,
+                  Message(MessageType.Warning,
+                      "Are you sure you want to delete this product?"),
+                  widget.productView.productId,
+                  widget.delFunc!);
             },
             child: const Text('Delete'),
           ),
@@ -126,8 +182,8 @@ class _ProductInfoViewState extends State<ProductInfoView> {
       visible: widget.addToCartFunc != null,
       child: TextButton(
         onPressed: () {
-          widget.addToCartFunc!(widget.myContext, widget.productView);
           Navigator.of(context).pop();
+          widget.addToCartFunc!(widget.myContext, widget.productView);
         },
         child: const Text('Add to Cart'),
       ),

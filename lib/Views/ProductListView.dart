@@ -2,8 +2,11 @@ import 'package:eshop/Controllers/ProductListController.dart';
 import 'package:eshop/Models/Domain/Product.dart';
 import 'package:eshop/Models/Domain/User.dart';
 import 'package:eshop/Models/Enums/AccountType.dart';
+import 'package:eshop/Models/Enums/MessageType.dart';
+import 'package:eshop/Models/ViewModels/MessageView.dart';
 import 'package:eshop/Models/ViewModels/ProductView.dart';
 import 'package:eshop/Views/AddToCartView.dart';
+import 'package:eshop/Views/DialogConfirmView.dart';
 import 'package:eshop/Views/GetProductDataView.dart';
 import 'package:eshop/Views/ProductInfoView.dart';
 import 'package:eshop/main.dart';
@@ -174,6 +177,7 @@ class ProductListWidgetState extends State<ProductListView> {
   Widget CustomerButtons(BuildContext context, ProductView product,
       ProductListController productListController) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Flexible(
           flex: 3,
@@ -263,8 +267,13 @@ class ProductListWidgetState extends State<ProductListView> {
                 child: IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () {
-                    productListController.DeleteProductAsync(
-                        context, product.productId);
+                    DialogConfirmView dialogConfirmView = DialogConfirmView();
+                    dialogConfirmView.ShowProductDialog(
+                        context,
+                        Message(MessageType.Warning,
+                            "Are you sure you want to delete this product?"),
+                        product.productId,
+                        productListController.DeleteProductAsync);
                   },
                 ),
               ),
